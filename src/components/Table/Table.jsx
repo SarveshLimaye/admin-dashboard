@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { BiEdit } from "react-icons/bi";
 import { RiDeleteBin7Line } from "react-icons/ri";
+import Pagination from "../Pagination/Pagination";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function Table({ data }) {
+  const pageSize = 10;
   const [items, setItems] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [editedName, setEditedName] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [editedEmail, setEditedEmail] = useState("");
   const [editedRole, setEditedRole] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [editedId, setEditedId] = useState("");
 
   useEffect(() => {
@@ -16,9 +21,15 @@ export default function Table({ data }) {
     }
   }, [items, data]);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const visibleItems = items.slice(startIndex, startIndex + pageSize);
+
   const handleDelete = (id) => {
     const filteredItems = items.filter((item) => item.id !== id);
-    console.log(filteredItems);
     setItems(filteredItems);
   };
 
@@ -30,35 +41,24 @@ export default function Table({ data }) {
     setEditedEmail(editedItem.email);
     setEditedRole(editedItem.role);
   };
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    const filteredItems = data.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term.toLowerCase()) ||
+        item.email.toLowerCase().includes(term.toLowerCase()) ||
+        item.role.toLowerCase().includes(term.toLowerCase())
+    );
+    setItems(filteredItems);
+  };
+
   return (
     <div className="container mt-5 mb-10  px-60">
       <div className="flex flex-col">
         <div className="overflow-x-auto">
           <div className="py-3 pl-2">
-            <div className="relative max-w-xs">
-              <label htmlFor="hs-table-search" className="sr-only">
-                Search
-              </label>
-              <input
-                type="text"
-                name="hs-table-search"
-                id="hs-table-search"
-                className="block w-full p-3 pl-10 text-sm border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-                placeholder="Search..."
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                <svg
-                  className="h-3.5 w-3.5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg>
-              </div>
-            </div>
+            <SearchBar onSearch={handleSearch} />
           </div>
 
           <div className="p-1.5 w-full inline-block align-middle">
@@ -108,7 +108,7 @@ export default function Table({ data }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {items.map((item) => (
+                  {visibleItems.map((item) => (
                     <tr key={item.id}>
                       <td className="py-3 pl-4">
                         <div className="flex items-center h-5">
@@ -210,6 +210,11 @@ export default function Table({ data }) {
               </table>
             </div>
           </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(items.length / pageSize)}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
     </div>
