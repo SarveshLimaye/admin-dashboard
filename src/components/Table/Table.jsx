@@ -14,6 +14,7 @@ export default function Table({ data }) {
   const [editedRole, setEditedRole] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [editedId, setEditedId] = useState("");
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     if (items.length === 0) {
@@ -53,12 +54,45 @@ export default function Table({ data }) {
     setItems(filteredItems);
   };
 
+  const handleToggleSelect = (id) => {
+    setSelectedItems((prevSelected) => {
+      if (prevSelected.includes(id)) {
+        return prevSelected.filter((selectedId) => selectedId !== id);
+      } else {
+        return [...prevSelected, id];
+      }
+    });
+  };
+
+  const handleDeleteSelected = () => {
+    const updatedItems = items.filter(
+      (item) => !selectedItems.includes(item.id)
+    );
+    setItems(updatedItems);
+    setSelectedItems([]);
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedItems.length === visibleItems.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(visibleItems.map((item) => item.id));
+    }
+  };
+
   return (
     <div className="container mt-5 mb-10  px-60">
       <div className="flex flex-col">
         <div className="overflow-x-auto">
-          <div className="py-3 pl-2">
+          <div className="py-3 pl-2 flex justify-between">
             <SearchBar onSearch={handleSearch} />
+
+            <button
+              onClick={() => handleDeleteSelected()}
+              className="text-red-500 hover:text-red-700"
+            >
+              Delete Selected
+            </button>
           </div>
 
           <div className="p-1.5 w-full inline-block align-middle">
@@ -72,6 +106,8 @@ export default function Table({ data }) {
                           id="checkbox-all"
                           type="checkbox"
                           className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                          checked={selectedItems.length === visibleItems.length}
+                          onChange={() => handleToggleSelectAll()}
                         />
                         <label htmlFor="checkbox" className="sr-only">
                           Checkbox
@@ -115,6 +151,8 @@ export default function Table({ data }) {
                           <input
                             type="checkbox"
                             className="text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                            checked={selectedItems.includes(item.id)}
+                            onChange={() => handleToggleSelect(item.id)}
                           />
                           <label htmlFor="checkbox" className="sr-only">
                             Checkbox
@@ -210,6 +248,7 @@ export default function Table({ data }) {
               </table>
             </div>
           </div>
+
           <Pagination
             currentPage={currentPage}
             totalPages={Math.ceil(items.length / pageSize)}
