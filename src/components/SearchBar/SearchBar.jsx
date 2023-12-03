@@ -14,7 +14,7 @@ export default function SearchBar({ onSearch }) {
       />
       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <svg
-          className="h-3.5 w-3.5 text-gray-400"
+          className="search-icon h-3.5 w-3.5 text-gray-400"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"

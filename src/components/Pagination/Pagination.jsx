@@ -15,14 +15,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="flex justify-center p-2">
       <button
-        className="mx-2"
+        className="mx-2 first-page"
         onClick={() => handleButtonClick(1)}
         disabled={currentPage === 1}
       >
         <FaFastBackward />
       </button>
       <button
-        className="mx-2"
+        className="mx-2 previous-page"
         onClick={() => handleButtonClick(currentPage - 1)}
         disabled={currentPage === 1}
       >
@@ -34,12 +34,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => handleButtonClick(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="mx-2"
+        className="mx-2 next-page"
       >
         <FaStepForward />
       </button>
       <button
-        className="mx-2"
+        className="mx-2 last-page"
         onClick={() => handleButtonClick(totalPages)}
         disabled={currentPage === totalPages}
       >

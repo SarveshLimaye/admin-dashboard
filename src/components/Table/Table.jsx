@@ -145,7 +145,14 @@ export default function Table({ data }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {visibleItems.map((item) => (
-                    <tr key={item.id}>
+                    <tr
+                      key={item.id}
+                      className={
+                        selectedItems.includes(item.id)
+                          ? "bg-gray-100"
+                          : "hover:bg-gray-50"
+                      }
+                    >
                       <td className="py-3 pl-4">
                         <div className="flex items-center h-5">
                           <input
@@ -198,9 +205,15 @@ export default function Table({ data }) {
                         )}
                       </td>
 
-                      <td className="px-6 py-4 text-sm font-medium flex space-x-4">
+                      <td
+                        className={
+                          isEdit && editedId === item.id
+                            ? "py-4 text-sm font-medium flex space-x-4"
+                            : "px-6 py-4 text-sm font-medium flex space-x-4"
+                        }
+                      >
                         {isEdit && editedId === item.id ? (
-                          <>
+                          <div className="w-48">
                             <button
                               onClick={() => {
                                 setIsEdit(false);
@@ -208,7 +221,7 @@ export default function Table({ data }) {
                                 setEditedEmail("");
                                 setEditedRole("");
                               }}
-                              className="text-blue-600 hover:text-blue-900"
+                              className="text-blue-600 mx-1 hover:text-blue-900"
                             >
                               Cancel
                             </button>
@@ -226,20 +239,20 @@ export default function Table({ data }) {
                                 setEditedRole("");
                                 setEditedId("");
                               }}
-                              className="text-blue-600 hover:text-blue-900"
+                              className="save text-blue-600 mx-1 hover:text-blue-900"
                             >
                               Save
                             </button>
-                          </>
+                          </div>
                         ) : (
                           <BiEdit
                             onClick={() => handleEdit(item.id)}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="edit text-blue-600 hover:text-blue-900"
                           />
                         )}
                         <RiDeleteBin7Line
                           onClick={() => handleDelete(item.id)}
-                          className="text-red-500 hover:text-red-700"
+                          className="delete text-red-500 hover:text-red-700"
                         />
                       </td>
                     </tr>
